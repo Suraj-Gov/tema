@@ -20,7 +20,8 @@ export const initializeLucia = (
       attributes: {
         // set to `true` when using HTTPS
         secure: process.env.NODE_ENV === "production",
-        sameSite: "none" as any,
+        domain:
+          process.env.NODE_ENV === "production" ? ".surajgovind.me" : undefined,
       },
     },
     getUserAttributes: (attribs) => {

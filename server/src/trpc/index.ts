@@ -12,7 +12,7 @@ export const authedProcedure = t.procedure.use(async (opts) => {
     throw new TRPCError({ code: "UNAUTHORIZED", message: "Please log in" });
   }
 
-  const { isAuthorized, sessionCookie } = await isUserAuthorized(cookie);
+  const { isAuthorized, sessionCookie, uid } = await isUserAuthorized(cookie);
   if (sessionCookie) {
     opts.ctx.res.header("set-cookie", sessionCookie);
   }
@@ -21,6 +21,10 @@ export const authedProcedure = t.procedure.use(async (opts) => {
   }
 
   return opts.next({
-    ctx: opts.ctx,
+    ctx: {
+      req: opts.ctx.req,
+      res: opts.ctx.res,
+      uid,
+    },
   });
 });

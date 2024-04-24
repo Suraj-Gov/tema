@@ -1,5 +1,4 @@
 import { eq } from "drizzle-orm";
-import type { Session } from "lucia";
 import { z } from "zod";
 import { isValidEmail } from "../auth/lucia";
 import {
@@ -16,7 +15,7 @@ import { authedProcedure, publicProcedure, router } from "../trpc";
 const signupFields = z.object({
   email: z.string(),
   password: z.string().min(8),
-  name: z.string(),
+  name: z.string().min(2),
 });
 
 const handleSignup = async (input: z.infer<typeof signupFields>) => {
@@ -54,6 +53,22 @@ const handleLogout = async (cookie: string): Promise<string> => {
   return blankCookie;
 };
 
+const handleGetUser = async (
+  uid: number
+): Promise<Result<Omit<User, "hashedPassword">>> => {
+  const userRows = await db
+    .select()
+    .from(usersTable)
+    .where(eq(usersTable.id, uid));
+  const user = userRows[0];
+  if (!user) {
+    return Result.error("User not found", "NOT_FOUND");
+  }
+
+  const { hashedPassword: _, ...userData } = user;
+  return new Result(userData);
+};
+
 export const userAuthRouter = router({
   signup: publicProcedure.input(signupFields).mutation(async (opts) => {
     const res = await handleSignup(opts.input);
@@ -71,8 +86,10 @@ export const userAuthRouter = router({
     opts.ctx.res.header("set-cookie", getSessionCookie(session).serialize());
     return user;
   }),
-  auth: authedProcedure.query(() => {
-    return true;
+  getUser: authedProcedure.query(async (opts) => {
+    const res = await handleGetUser(opts.ctx.uid || -1);
+    if (res.error) return res.httpErrResponse();
+    return res.val;
   }),
   logout: publicProcedure.mutation(async (opts) => {
     const cookie = opts.ctx.req.headers.cookie;

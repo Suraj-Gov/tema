@@ -80,7 +80,7 @@ export const logoutUser = async (cookie: string) => {
 // https://lucia-auth.com/guides/validate-session-cookies/
 export const isUserAuthorized = async (
   cookie: string
-): Promise<{ isAuthorized: boolean; sessionCookie?: string }> => {
+): Promise<{ isAuthorized: boolean; sessionCookie?: string; uid?: number }> => {
   const session = lucia.readSessionCookie(cookie);
   if (!session) return { isAuthorized: false };
   const validation = await lucia.validateSession(session);
@@ -94,7 +94,11 @@ export const isUserAuthorized = async (
   if (validation?.session?.fresh) {
     // issue fresh cookie
     const newCookie = lucia.createSessionCookie(validation.session.id);
-    return { isAuthorized: true, sessionCookie: newCookie.serialize() };
+    return {
+      isAuthorized: true,
+      sessionCookie: newCookie.serialize(),
+      uid: validation.session.userId,
+    };
   }
   return { isAuthorized: true };
 };

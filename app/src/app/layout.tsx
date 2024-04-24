@@ -1,4 +1,6 @@
-import { Theme } from "@radix-ui/themes";
+import Navbar from "@/components/main/Navbar";
+import Provider from "@/components/main/Provider";
+import { Flex, Theme } from "@radix-ui/themes";
 import "@radix-ui/themes/styles.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
@@ -19,7 +21,14 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <Theme>{children}</Theme>
+        <Theme>
+          <Provider>
+            <Flex minHeight={"100svh"}>
+              <Navbar />
+              {children}
+            </Flex>
+          </Provider>
+        </Theme>
       </body>
     </html>
   );

@@ -17,7 +17,7 @@ const server = fastify({
 
 server.register(cookie);
 server.register(cors, {
-  origin: true,
+  origin: ["https://tema-web.onrender.com", true],
   allowedHeaders: "Content-Type,Authorization,Cookie",
   credentials: true,
 });

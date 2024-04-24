@@ -38,8 +38,8 @@ const main = async () => {
   try {
     connectPostgres();
     initializeLucia(db);
-    await server.listen({ port: env.PORT });
-    console.log("live on port", env.PORT);
+    await server.listen({ port: env.PORT, host: env.HOST });
+    console.log(`live on ${env.HOST}:${env.PORT}`);
   } catch (err) {
     console.log("could not start server", err);
     server.log.error(err);

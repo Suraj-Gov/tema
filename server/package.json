@@ -8,6 +8,7 @@
     "lint": "tsc",
     "build": "esbuild src/index.ts --bundle --platform=node --outfile=dist/index.js --format=esm --packages=external --sourcemap=external",
     "start": "node --enable-source-maps dist/index.js",
+    "start:env": "dotenvx run -- node --enable-source-maps dist/index.js",
     "dev:tsc": "tsc --watch --preserveWatchOutput",
     "dev:node": "dotenvx run -- node --watch dist/index.js",
     "dev:esbuild": "pnpm run build --watch",

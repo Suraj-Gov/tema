@@ -1,14 +1,11 @@
 "use client";
 
-import { env } from "@/utils/env";
+import { getTRPCBaseUrl } from "@/utils/env";
 import { trpc } from "@/utils/trpc";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { httpBatchLink } from "@trpc/client";
 import { useState } from "react";
-
-const getBaseUrl = () => {
-  return `${env.SERVER_BASE_URL}/trpc`;
-};
+import { Toaster } from "react-hot-toast";
 
 export default function Provider({ children }: { children: React.ReactNode }) {
   const [queryClient] = useState(() => new QueryClient());
@@ -16,7 +13,7 @@ export default function Provider({ children }: { children: React.ReactNode }) {
     trpc.createClient({
       links: [
         httpBatchLink({
-          url: getBaseUrl(),
+          url: getTRPCBaseUrl(),
           fetch(url, options) {
             return fetch(url, {
               ...options,
@@ -30,7 +27,10 @@ export default function Provider({ children }: { children: React.ReactNode }) {
 
   return (
     <trpc.Provider client={trpcClient} queryClient={queryClient}>
-      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+      <QueryClientProvider client={queryClient}>
+        {children}
+        <Toaster />
+      </QueryClientProvider>
     </trpc.Provider>
   );
 }

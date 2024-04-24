@@ -8,6 +8,7 @@ export default function LogoutButton() {
   const logout = trpc.user.logout.useMutation({
     onSettled: () => {
       router.push("/");
+      router.refresh();
     },
   });
 

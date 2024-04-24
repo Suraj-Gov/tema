@@ -19,12 +19,14 @@ const signupFields = z.object({
   name: z.string().min(2),
 });
 
-const userFields: z.ZodType<Omit<User, "hashedPassword">> = z.object({
+export const userProfileFields: z.ZodType<
+  Omit<User, "hashedPassword" | "createdAt">
+> = z.object({
   id: z.number(),
   name: z.string(),
   email: z.string(),
-  createdAt: z.date(),
 });
+export type UserProfile = z.infer<typeof userProfileFields>;
 
 const handleSignup = async (
   input: z.infer<typeof signupFields>
@@ -82,7 +84,7 @@ const handleGetUser = async (
 export const userAuthRouter = router({
   signup: publicProcedure
     .input(signupFields)
-    .output(userFields)
+    .output(userProfileFields)
     .mutation(async (opts) => {
       const res = await handleSignup(opts.input);
       if (res.error) return res.httpErrResponse("BAD_REQUEST");
@@ -93,7 +95,7 @@ export const userAuthRouter = router({
     }),
   login: publicProcedure
     .input(loginFields)
-    .output(userFields)
+    .output(userProfileFields)
     .mutation(async (opts) => {
       const res = await handleLogin(opts.input);
       if (res.error) return res.httpErrResponse();
@@ -102,7 +104,7 @@ export const userAuthRouter = router({
       opts.ctx.res.header("set-cookie", getSessionCookie(session).serialize());
       return user;
     }),
-  getUser: authedProcedure.output(userFields).query(async (opts) => {
+  getUser: authedProcedure.output(userProfileFields).query(async (opts) => {
     const res = await handleGetUser(opts.ctx.uid || -1);
     if (res.error) return res.httpErrResponse();
     return res.val;

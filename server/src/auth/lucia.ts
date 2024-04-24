@@ -20,7 +20,7 @@ export const initializeLucia = (
       attributes: {
         // set to `true` when using HTTPS
         secure: process.env.NODE_ENV === "production",
-        domain: "onrender.com",
+        domain: "tema-web.onrender.com",
       },
     },
     getUserAttributes: (attribs) => {

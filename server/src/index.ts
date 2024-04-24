@@ -17,7 +17,7 @@ const server = fastify({
 
 server.register(cookie);
 server.register(cors, {
-  origin: [/\.onrender\.com$/, true],
+  origin: [/\.surajgovind\.me$/, true],
   allowedHeaders: "Content-Type,Authorization,Cookie",
   credentials: true,
 });

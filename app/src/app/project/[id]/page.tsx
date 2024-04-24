@@ -1,9 +1,11 @@
 "use client";
+import Editor from "@/components/main/Editor";
 import { showToast } from "@/utils/toast";
 import { trpc } from "@/utils/trpc";
 import { Flex, Spinner } from "@radix-ui/themes";
 import { useParams, useRouter } from "next/navigation";
 
+// TODO use RSC
 export default function ProjectPage() {
   const user = trpc.user.getUser.useQuery();
   const params = useParams();
@@ -15,25 +17,35 @@ export default function ProjectPage() {
     { id: projectId },
     {
       enabled: isValidProjectId && isLoggedIn,
+      refetchOnMount: false,
+      refetchOnWindowFocus: false,
     }
   );
 
-  const navigateToHome = () => {
-    showToast("You're not logged in", "ERR");
+  const navigateToHome = (msg: string) => {
+    showToast(msg, "ERR");
     router.push("/");
   };
 
   if (user.isLoading || project.isLoading) {
     return (
-      <Flex>
+      <Flex justify={"center"}>
         <Spinner size={"3"} />
       </Flex>
     );
   }
 
   if (!isLoggedIn) {
-    navigateToHome();
+    navigateToHome("You're not logged in");
+    return null;
   }
 
-  return <pre>{JSON.stringify(project.data)}</pre>;
+  if (!project.data) {
+    navigateToHome("Project does not exist");
+    return null;
+  }
+
+  const { config, id } = project.data;
+
+  return <Editor id={id} config={config} />;
 }

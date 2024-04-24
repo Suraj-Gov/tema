@@ -3,8 +3,8 @@ import { z } from "zod";
 export const userProjectConfigSchema = z.object({
   colors: z.array(
     z.object({
+      id: z.number(),
       val: z.string(),
-      type: z.enum(["RGBA", "HSLA"]),
       label: z.string(),
     })
   ),

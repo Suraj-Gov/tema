@@ -2,12 +2,19 @@
 import { showToast } from "@/utils/toast";
 import { trpc } from "@/utils/trpc";
 import { Pencil2Icon, PlusIcon } from "@radix-ui/react-icons";
-import { Dialog, Flex, TextField } from "@radix-ui/themes";
-import { useRouter } from "next/navigation";
+import { Button, ButtonProps, Dialog, Flex, TextField } from "@radix-ui/themes";
+import { usePathname, useRouter } from "next/navigation";
 import { FormEventHandler } from "react";
-import Button from "../buttons/Button";
 
-export default function CreateProject() {
+export function HomePageCreateProject() {
+  const pathname = usePathname();
+  const onHomePage = pathname === "/";
+  return onHomePage && <CreateProject />;
+}
+
+export default function CreateProject(
+  props: Pick<ButtonProps, "variant" | "size">
+) {
   const router = useRouter();
 
   const create = trpc.project.create.useMutation({
@@ -31,7 +38,7 @@ export default function CreateProject() {
   return (
     <Dialog.Root>
       <Dialog.Trigger>
-        <Button>
+        <Button {...props}>
           <PlusIcon />
           Create
         </Button>

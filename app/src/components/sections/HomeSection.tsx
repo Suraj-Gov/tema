@@ -5,7 +5,7 @@ import ProjectsList from "./ProjectsList";
 
 export default function HomeSection({ user }: { user: UserProfile }) {
   return (
-    <Container p="4" size={"1"}>
+    <Container p="4" size={"2"}>
       <ProjectsList user={user} />
     </Container>
   );

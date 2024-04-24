@@ -86,6 +86,15 @@ const handleGetAllProjects = async (
 const getProjectByIDFields = z.object({
   id: z.number(),
 });
+const projectFields: z.ZodType<UserProject & { config: UserProjectConfig }> =
+  z.object({
+    id: z.number(),
+    name: z.string(),
+    userId: z.number(),
+    config: userProjectConfigSchema,
+    createdAt: z.date(),
+    updatedAt: z.date(),
+  });
 const handleGetProjectByID = async (
   uid: number,
   input: z.infer<typeof getProjectByIDFields>
@@ -122,9 +131,12 @@ export const userProjectsRouter = router({
     if (res.error) return res.httpErrResponse();
     return res.val;
   }),
-  getByID: authedProcedure.input(getProjectByIDFields).query(async (opts) => {
-    const res = await handleGetProjectByID(opts.ctx.uid!, opts.input);
-    if (res.error) return res.httpErrResponse();
-    return res.val;
-  }),
+  getByID: authedProcedure
+    .input(getProjectByIDFields)
+    .output(projectFields)
+    .query(async (opts) => {
+      const res = await handleGetProjectByID(opts.ctx.uid!, opts.input);
+      if (res.error) return res.httpErrResponse();
+      return res.val;
+    }),
 });

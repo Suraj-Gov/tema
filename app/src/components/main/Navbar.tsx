@@ -1,8 +1,8 @@
 import { getLoggedInUser } from "@/utils/data";
-import { Avatar, Flex, Separator, Text } from "@radix-ui/themes";
+import { Avatar, Flex, Heading, Separator, Text } from "@radix-ui/themes";
 import Link from "next/link";
 import LogoutButton from "../buttons/LogoutButton";
-import CreateProject from "../dialogs/CreateProject";
+import { HomePageCreateProject } from "../dialogs/CreateProject";
 
 export default async function Navbar() {
   const user = await getLoggedInUser();
@@ -12,11 +12,11 @@ export default async function Navbar() {
     <Flex p="4" justify={isLoggedIn ? "between" : "center"}>
       <Flex gap="4" align={"center"}>
         <Link href="/">
-          <Text size={"6"}>
+          <Heading>
             <strong>Tema</strong>
-          </Text>
+          </Heading>
         </Link>
-        {isLoggedIn && <CreateProject />}
+        {isLoggedIn && <HomePageCreateProject />}
       </Flex>
 
       {isLoggedIn && (

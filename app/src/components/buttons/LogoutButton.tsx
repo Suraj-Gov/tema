@@ -1,7 +1,7 @@
 "use client";
 import { trpc } from "@/utils/trpc";
+import { Button } from "@radix-ui/themes";
 import { useRouter } from "next/navigation";
-import Button from "./Button";
 
 export default function LogoutButton() {
   const router = useRouter();

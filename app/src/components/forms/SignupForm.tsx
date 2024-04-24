@@ -6,10 +6,9 @@ import {
   LockClosedIcon,
   PersonIcon,
 } from "@radix-ui/react-icons";
-import { Container, Flex, TextField } from "@radix-ui/themes";
+import { Button, Container, Flex, TextField } from "@radix-ui/themes";
 import { useRouter } from "next/navigation";
 import { FormEventHandler } from "react";
-import Button from "../buttons/Button";
 
 export default function SignupForm() {
   const signup = trpc.user.signup.useMutation();

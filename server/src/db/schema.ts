@@ -7,17 +7,20 @@ const configElements = z.enum([
   "input.checkbox",
   "select",
 ]);
+export type ConfigElementTypes = z.infer<typeof configElements>;
 const configElementStyles = z.object({
   styleName: z.string(),
   backgroundColor: z.string(),
+  borderColor: z.string(),
   color: z.string(),
   borderWidth: z.number(),
   borderRadius: z.number(),
   paddingX: z.number(),
   paddingY: z.number(),
 });
-export type ConfigElementTypes = z.infer<typeof configElements>;
 export type ConfigElementStyles = z.infer<typeof configElementStyles>;
+const dimensionTypes = z.enum(["border", "padding", "radius"]);
+export type DimensionTypes = z.infer<typeof dimensionTypes>;
 
 export const userProjectConfigSchema = z.object({
   colors: z.array(
@@ -29,7 +32,8 @@ export const userProjectConfigSchema = z.object({
   dimensions: z.array(
     z.object({
       px: z.number(),
-      type: z.enum(["border", "padding", "radius"]),
+      type: dimensionTypes,
+      id: z.number(),
     })
   ),
   elements: z.record(configElements, configElementStyles.array()),

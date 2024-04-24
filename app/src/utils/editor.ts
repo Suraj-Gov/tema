@@ -18,15 +18,15 @@ export const populateDefaultValues = (config: UserProjectConfig) => {
   }
   if (!config.dimensions.length) {
     finalValue.dimensions.push(
-      { type: "border", px: 1 },
-      { type: "border", px: 2 },
-      { type: "border", px: 4 },
-      { type: "radius", px: 0 },
-      { type: "radius", px: 2 },
-      { type: "radius", px: 4 },
-      { type: "padding", px: 2 },
-      { type: "padding", px: 4 },
-      { type: "padding", px: 8 }
+      { type: "border", px: 1, id: 0 },
+      { type: "border", px: 2, id: 1 },
+      { type: "border", px: 4, id: 2 },
+      { type: "radius", px: 0, id: 10 },
+      { type: "radius", px: 2, id: 11 },
+      { type: "radius", px: 4, id: 12 },
+      { type: "padding", px: 2, id: 20 },
+      { type: "padding", px: 4, id: 21 },
+      { type: "padding", px: 8, id: 22 }
     );
   }
   if (!config.elements.button?.length) {
@@ -34,6 +34,7 @@ export const populateDefaultValues = (config: UserProjectConfig) => {
       {
         styleName: "Default",
         backgroundColor: "#8b8d98",
+        borderColor: "#8b8d98",
         borderRadius: 0,
         borderWidth: 1,
         color: "#ffffff",
@@ -47,6 +48,7 @@ export const populateDefaultValues = (config: UserProjectConfig) => {
       {
         styleName: "Default",
         backgroundColor: "#ffffff",
+        borderColor: "#8b8d98",
         borderRadius: 0,
         borderWidth: 0,
         color: "#000000",
@@ -60,6 +62,7 @@ export const populateDefaultValues = (config: UserProjectConfig) => {
       {
         styleName: "Default",
         backgroundColor: "#ffffff",
+        borderColor: "#8b8d98",
         borderRadius: 0,
         borderWidth: 0,
         color: "#000000",
@@ -73,6 +76,7 @@ export const populateDefaultValues = (config: UserProjectConfig) => {
       {
         styleName: "Default",
         backgroundColor: "#8b8d98",
+        borderColor: "#8b8d98",
         borderRadius: 0,
         borderWidth: 1,
         color: "#ffffff",
@@ -86,6 +90,7 @@ export const populateDefaultValues = (config: UserProjectConfig) => {
       {
         styleName: "Default",
         backgroundColor: "#8b8d98",
+        borderColor: "#8b8d98",
         borderRadius: 0,
         borderWidth: 1,
         color: "#ffffff",

@@ -38,7 +38,6 @@ const handleCreateProject = async (
 };
 
 const updateProjectFields = z.object({
-  name: z.string().min(4),
   config: userProjectConfigSchema,
 });
 const handleUpdateProject = async (
@@ -48,7 +47,6 @@ const handleUpdateProject = async (
   try {
     await db.update(userProjectsTable).set({
       config: input.config,
-      name: input.name,
       updatedAt: new Date(),
     });
     return new Result(true);

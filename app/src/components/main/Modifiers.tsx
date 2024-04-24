@@ -1,5 +1,13 @@
-import { PlusCircledIcon } from "@radix-ui/react-icons";
-import { Button, ButtonProps, Flex, Popover, Slider } from "@radix-ui/themes";
+import { Cross1Icon, PlusCircledIcon } from "@radix-ui/react-icons";
+import {
+  Box,
+  Button,
+  ButtonProps,
+  Flex,
+  IconButton,
+  Popover,
+  Slider,
+} from "@radix-ui/themes";
 import { ElementRef, forwardRef } from "react";
 import { HexColorPicker } from "react-colorful";
 import { useDebouncyFn } from "use-debouncy";
@@ -22,8 +30,8 @@ export const ModifierTile = forwardRef<
 >(function ColorSwatchTile(props, ref) {
   const {
     bgColor = "#ffffff",
-    borderWidth = 4,
-    borderRadius = 4,
+    borderWidth = 2,
+    borderRadius = 2,
     ...domProps
   } = props;
 
@@ -49,7 +57,7 @@ export const ModifierTile = forwardRef<
 
 export function TilesContainer({ children }: { children: React.ReactNode }) {
   return (
-    <Flex wrap={"wrap"} py="2" gap="1" maxWidth={"15rem"}>
+    <Flex wrap={"wrap"} justify={"start"} py="2" gap="1" maxWidth={"15rem"}>
       {children}
     </Flex>
   );
@@ -90,11 +98,25 @@ export function ColorSwatches({
 }) {
   const exisitingColorSwatches = config.colors.map((c) => {
     return (
-      <ColorPicker
-        key={c.id}
-        color={c}
-        onChange={(c) => handleColorChange(c, "UPDATE")}
-      />
+      <Box position={"relative"} key={c.id}>
+        <ColorPicker
+          color={c}
+          onChange={(c) => handleColorChange(c, "UPDATE")}
+        />
+        <IconButton
+          onClick={() => handleColorChange(c, "DELETE")}
+          size="1"
+          style={{
+            background: "white",
+            color: "black",
+            position: "absolute",
+            top: "-10%",
+            right: "-10%",
+          }}
+        >
+          <Cross1Icon />
+        </IconButton>
+      </Box>
     );
   });
 
@@ -167,12 +189,27 @@ export function DimensionSwatches({
     .filter((d) => d.type === dimensionType)
     .map((d) => {
       return (
-        <DimensionPicker
-          key={d.id}
-          dimension={d}
-          onChange={(c) => handleDimensionChange(c, "UPDATE")}
-          type={dimensionType}
-        />
+        <Box position={"relative"} key={d.id}>
+          <DimensionPicker
+            key={d.id}
+            dimension={d}
+            onChange={(d) => handleDimensionChange(d, "UPDATE")}
+            type={dimensionType}
+          />
+          <IconButton
+            onClick={() => handleDimensionChange(d, "DELETE")}
+            size="1"
+            style={{
+              background: "white",
+              color: "black",
+              position: "absolute",
+              top: "-10%",
+              right: "-10%",
+            }}
+          >
+            <Cross1Icon />
+          </IconButton>
+        </Box>
       );
     });
 

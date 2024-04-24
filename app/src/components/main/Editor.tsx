@@ -1,5 +1,6 @@
 "use client";
 import { populateDefaultValues } from "@/utils/editor";
+import { trpc } from "@/utils/trpc";
 import {
   Container,
   Flex,
@@ -8,7 +9,8 @@ import {
   Popover,
   Text,
 } from "@radix-ui/themes";
-import React, { CSSProperties, useState } from "react";
+import equal from "fast-deep-equal";
+import React, { CSSProperties, useEffect, useRef, useState } from "react";
 import {
   ConfigElementStyles,
   UserProjectConfig,
@@ -28,10 +30,39 @@ interface props {
   id: UserProject["id"];
 }
 
+const TIMEOUT_INTERVAL = 10000;
+
 export default function Editor({ config, id }: props) {
   const [configState, setConfigState] = useState(() =>
     populateDefaultValues(config)
   );
+
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const update = trpc.project.update.useMutation({
+    onSuccess: () => {
+      config = structuredClone(configState);
+    },
+  });
+
+  console.log(configState);
+
+  useEffect(() => {
+    const updateIfChanged = async () => {
+      const isEqual = equal(configState, config);
+      if (!isEqual) {
+        await update.mutateAsync({ config: configState });
+      }
+      timeoutRef.current = setTimeout(updateIfChanged, TIMEOUT_INTERVAL);
+    };
+
+    timeoutRef.current = setTimeout(updateIfChanged, TIMEOUT_INTERVAL);
+
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, [config, configState, update]);
 
   const handleColorChange = (
     params: ColorItem,

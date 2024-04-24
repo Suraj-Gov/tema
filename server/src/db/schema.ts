@@ -1,30 +1,20 @@
-import type { InferSelectModel } from "drizzle-orm";
-import {
-  integer,
-  pgSchema,
-  serial,
-  text,
-  timestamp,
-} from "drizzle-orm/pg-core";
+import { z } from "zod";
 
-const projectSchema = pgSchema("tema");
-
-export const usersTable = projectSchema.table("users", {
-  id: serial("id").primaryKey(),
-  name: text("name").notNull(),
-  email: text("email").unique().notNull(),
-  hashedPassword: text("p_hash").notNull(),
-  createdAt: timestamp("created_at").defaultNow(),
+export const userProjectConfigSchema = z.object({
+  colors: z.array(
+    z.object({
+      val: z.string(),
+      type: z.enum(["RGBA", "HSLA"]),
+      label: z.string(),
+    })
+  ),
+  dimensions: z.array(
+    z.object({
+      val: z.number(),
+      unit: z.enum(["px", "em", "rem"]),
+      label: z.string(),
+      type: z.enum(["RADIUS", "SPACING", "RADIUS", "PADDING"]),
+    })
+  ),
 });
-export type User = InferSelectModel<typeof usersTable>;
-
-export const sessionsTable = projectSchema.table("sessions", {
-  id: text("id").primaryKey(),
-  userId: integer("uid")
-    .notNull()
-    .references(() => usersTable.id),
-  expiresAt: timestamp("expires_at", {
-    withTimezone: true,
-    mode: "date",
-  }).notNull(),
-});
+export type UserProjectConfig = z.infer<typeof userProjectConfigSchema>;

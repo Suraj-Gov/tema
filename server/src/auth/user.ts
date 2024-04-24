@@ -1,8 +1,8 @@
 import { eq } from "drizzle-orm";
 import { Scrypt, type Session } from "lucia";
 import { db } from "../db";
-import type { User } from "../db/schema";
-import { usersTable } from "../db/schema";
+import type { User } from "../db/tables";
+import { usersTable } from "../db/tables";
 import { Result } from "../helpers/result";
 import { lucia } from "./lucia";
 

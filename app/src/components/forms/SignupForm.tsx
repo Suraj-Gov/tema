@@ -26,6 +26,7 @@ export default function SignupForm() {
       {
         onSuccess: () => {
           router.replace("/");
+          router.refresh();
         },
         onError: (err) => {
           showToast(err.message, "ERR");
@@ -47,12 +48,12 @@ export default function SignupForm() {
               placeholder="Your name"
             >
               <TextField.Slot>
-                <PersonIcon height={"8"} width={"8"} />
+                <PersonIcon />
               </TextField.Slot>
             </TextField.Root>
             <TextField.Root name="email" type="email" placeholder="Email">
               <TextField.Slot>
-                <EnvelopeClosedIcon height={"8"} width={"8"} />
+                <EnvelopeClosedIcon />
               </TextField.Slot>
             </TextField.Root>
             <TextField.Root

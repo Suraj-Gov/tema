@@ -12,10 +12,14 @@ export default function LoginForm() {
   const login = trpc.user.login.useMutation();
   const router = useRouter();
 
+  const navigateToHome = () => {
+    router.replace("/");
+    router.refresh();
+  };
+
   useEffect(() => {
     if (user.isFetched && user.data?.name) {
-      router.replace("/");
-      router.refresh();
+      navigateToHome();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user.data?.name]);
@@ -29,7 +33,7 @@ export default function LoginForm() {
       { email, password },
       {
         onSuccess: () => {
-          router.replace("/");
+          navigateToHome();
         },
         onError: (err) => {
           showToast(err.message, "ERR");
@@ -45,7 +49,7 @@ export default function LoginForm() {
           <Flex direction={"column"} gap="4">
             <TextField.Root name="email" type="email" placeholder="Email">
               <TextField.Slot>
-                <EnvelopeClosedIcon height={"8"} width={"8"} />
+                <EnvelopeClosedIcon />
               </TextField.Slot>
             </TextField.Root>
             <TextField.Root

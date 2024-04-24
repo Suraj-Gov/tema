@@ -11,16 +11,15 @@ import {
 import { db } from "../db";
 import { usersTable, type User } from "../db/schema";
 import { Result } from "../helpers/result";
-import { publicProcedure, router } from "../trpc";
+import { authedProcedure, publicProcedure, router } from "../trpc";
 
 const signupFields = z.object({
   email: z.string(),
   password: z.string().min(8),
   name: z.string(),
 });
-const handleSignup = async (
-  input: z.infer<typeof signupFields>
-): Promise<Result<User & { session: Session }>> => {
+
+const handleSignup = async (input: z.infer<typeof signupFields>) => {
   const { email, name, password } = input;
 
   // validate email
@@ -60,7 +59,7 @@ export const userAuthRouter = router({
     const res = await handleSignup(opts.input);
     if (res.error) return res.httpErrResponse("BAD_REQUEST");
 
-    const { session, hashedPassword: _, ...user } = res.val;
+    const { session, ...user } = res.val;
     opts.ctx.res.header("set-cookie", getSessionCookie(session).serialize());
     return user;
   }),
@@ -68,9 +67,12 @@ export const userAuthRouter = router({
     const res = await handleLogin(opts.input);
     if (res.error) return res.httpErrResponse();
 
-    const { session, hashedPassword: _, ...user } = res.val;
+    const { session, ...user } = res.val;
     opts.ctx.res.header("set-cookie", getSessionCookie(session).serialize());
     return user;
+  }),
+  auth: authedProcedure.query(() => {
+    return true;
   }),
   logout: publicProcedure.mutation(async (opts) => {
     const cookie = opts.ctx.req.headers.cookie;

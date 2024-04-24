@@ -1,6 +1,6 @@
 import { DrizzlePostgreSQLAdapter } from "@lucia-auth/adapter-drizzle";
 import type { PostgresJsDatabase } from "drizzle-orm/postgres-js";
-import { Lucia } from "lucia";
+import { Lucia, TimeSpan } from "lucia";
 import { sessionsTable, usersTable } from "../db/schema";
 
 export let lucia: Lucia<
@@ -15,6 +15,7 @@ export const initializeLucia = (
 ) => {
   const adapter = new DrizzlePostgreSQLAdapter(db, sessionsTable, usersTable);
   lucia = new Lucia(adapter, {
+    sessionExpiresIn: new TimeSpan(4, "w"),
     sessionCookie: {
       attributes: {
         // set to `true` when using HTTPS

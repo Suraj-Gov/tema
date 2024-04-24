@@ -17,6 +17,7 @@ const handleCreateProject = async (
     const initConfig: UserProjectConfig = {
       colors: [],
       dimensions: [],
+      elements: {},
     };
     const newRow = await db
       .insert(userProjectsTable)

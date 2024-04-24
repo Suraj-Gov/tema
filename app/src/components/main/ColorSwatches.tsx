@@ -1,10 +1,28 @@
 import { PlusCircledIcon } from "@radix-ui/react-icons";
-import { Button, Flex, Popover } from "@radix-ui/themes";
+import { Button, ButtonProps, Flex, Popover } from "@radix-ui/themes";
+import { ElementRef, forwardRef } from "react";
 import { HexColorPicker } from "react-colorful";
 import { useDebouncyFn } from "use-debouncy";
 import { UserProjectConfig } from "../../../../server/src/db/schema";
 
 export type ColorItem = UserProjectConfig["colors"][number];
+
+type ButtonElement = ElementRef<typeof Button>;
+export const ColorSwatchTile = forwardRef<
+  ButtonElement,
+  ButtonProps & { bgColor: string }
+>(function ColorSwatchTile(props, ref) {
+  const { bgColor, ...domProps } = props;
+  return (
+    <Button
+      {...domProps}
+      ref={ref}
+      className="border-2 border-white"
+      variant="solid"
+      style={{ backgroundColor: bgColor, width: "3rem", height: "3rem" }}
+    />
+  );
+});
 
 function ColorPicker(props: {
   color: ColorItem;
@@ -20,18 +38,24 @@ function ColorPicker(props: {
   return (
     <Popover.Root>
       <Popover.Trigger>
-        <Button
-          className="border-2 border-white"
-          variant="solid"
-          style={{ backgroundColor: color, width: "3rem", height: "3rem" }}
-        >
-          {props.children}
-        </Button>
+        <ColorSwatchTile bgColor={color}>{props.children}</ColorSwatchTile>
       </Popover.Trigger>
       <Popover.Content width={"15rem"}>
         <HexColorPicker color={color} onChange={onColorChange} />
       </Popover.Content>
     </Popover.Root>
+  );
+}
+
+export function ColorSwatchesContainer({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <Flex wrap={"wrap"} py="2" gap="1" maxWidth={"15rem"}>
+      {children}
+    </Flex>
   );
 }
 
@@ -56,14 +80,11 @@ export default function ColorSwatches({
   });
 
   return (
-    <Flex wrap={"wrap"} py="2" gap="1" maxWidth={"15rem"}>
+    <ColorSwatchesContainer>
       {exisitingColorSwatches}
       <Button
         onClick={() =>
-          handleColorChange(
-            { id: Date.now(), label: "New", val: "#efefef" },
-            "ADD"
-          )
+          handleColorChange({ id: Date.now(), val: "#efefef" }, "ADD")
         }
         style={{
           width: "3rem",
@@ -74,6 +95,6 @@ export default function ColorSwatches({
       >
         <PlusCircledIcon color="black" width="2rem" height="2rem" />
       </Button>
-    </Flex>
+    </ColorSwatchesContainer>
   );
 }

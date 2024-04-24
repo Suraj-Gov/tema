@@ -30,7 +30,7 @@ interface props {
   id: UserProject["id"];
 }
 
-const TIMEOUT_INTERVAL = 10000;
+const TIMEOUT_INTERVAL = 5000;
 
 export default function Editor({ config, id }: props) {
   const [configState, setConfigState] = useState(() =>

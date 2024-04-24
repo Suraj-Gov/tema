@@ -43,8 +43,8 @@ export const ModifierTile = forwardRef<
       style={{
         backgroundColor: bgColor,
         borderTopWidth: borderWidth,
-        borderRightWidth: borderWidth,
-        borderTopRightRadius: borderRadius,
+        borderLeftWidth: borderWidth,
+        borderTopLeftRadius: borderRadius,
         borderColor: "black",
         borderStyle: "solid",
         width: "3rem",

@@ -23,7 +23,7 @@ export default function RootLayout({
       <body className={inter.className}>
         <Theme>
           <Provider>
-            <Flex minHeight={"100svh"}>
+            <Flex direction={"column"} minHeight={"100svh"}>
               <Navbar />
               {children}
             </Flex>

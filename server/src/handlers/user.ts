@@ -6,6 +6,7 @@ import {
   getSessionCookie,
   loginUser,
   logoutUser,
+  type LoginData,
 } from "../auth/user";
 import { db } from "../db";
 import { usersTable, type User } from "../db/schema";
@@ -18,7 +19,16 @@ const signupFields = z.object({
   name: z.string().min(2),
 });
 
-const handleSignup = async (input: z.infer<typeof signupFields>) => {
+const userFields: z.ZodType<Omit<User, "hashedPassword">> = z.object({
+  id: z.number(),
+  name: z.string(),
+  email: z.string(),
+  createdAt: z.date(),
+});
+
+const handleSignup = async (
+  input: z.infer<typeof signupFields>
+): Promise<Result<LoginData>> => {
   const { email, name, password } = input;
 
   // validate email
@@ -70,23 +80,29 @@ const handleGetUser = async (
 };
 
 export const userAuthRouter = router({
-  signup: publicProcedure.input(signupFields).mutation(async (opts) => {
-    const res = await handleSignup(opts.input);
-    if (res.error) return res.httpErrResponse("BAD_REQUEST");
+  signup: publicProcedure
+    .input(signupFields)
+    .output(userFields)
+    .mutation(async (opts) => {
+      const res = await handleSignup(opts.input);
+      if (res.error) return res.httpErrResponse("BAD_REQUEST");
 
-    const { session, ...user } = res.val;
-    opts.ctx.res.header("set-cookie", getSessionCookie(session).serialize());
-    return user;
-  }),
-  login: publicProcedure.input(loginFields).mutation(async (opts) => {
-    const res = await handleLogin(opts.input);
-    if (res.error) return res.httpErrResponse();
+      const { session, ...user } = res.val;
+      opts.ctx.res.header("set-cookie", getSessionCookie(session).serialize());
+      return user;
+    }),
+  login: publicProcedure
+    .input(loginFields)
+    .output(userFields)
+    .mutation(async (opts) => {
+      const res = await handleLogin(opts.input);
+      if (res.error) return res.httpErrResponse();
 
-    const { session, ...user } = res.val;
-    opts.ctx.res.header("set-cookie", getSessionCookie(session).serialize());
-    return user;
-  }),
-  getUser: authedProcedure.query(async (opts) => {
+      const { session, ...user } = res.val;
+      opts.ctx.res.header("set-cookie", getSessionCookie(session).serialize());
+      return user;
+    }),
+  getUser: authedProcedure.output(userFields).query(async (opts) => {
     const res = await handleGetUser(opts.ctx.uid || -1);
     if (res.error) return res.httpErrResponse();
     return res.val;

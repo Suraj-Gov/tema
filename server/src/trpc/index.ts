@@ -1,7 +1,6 @@
 import { TRPCError, initTRPC } from "@trpc/server";
-import type { TRPCContext } from "./context";
-import { Result } from "../helpers/result";
 import { isUserAuthorized } from "../auth/user";
+import type { TRPCContext } from "./context";
 
 export const t = initTRPC.context<TRPCContext>().create();
 export const router = t.router;

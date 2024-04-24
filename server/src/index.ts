@@ -1,3 +1,5 @@
+import cookie from "@fastify/cookie";
+import cors from "@fastify/cors";
 import {
   fastifyTRPCPlugin,
   type FastifyTRPCPluginOptions,
@@ -13,6 +15,12 @@ const server = fastify({
   maxParamLength: 5000,
 });
 
+server.register(cookie);
+server.register(cors, {
+  origin: true,
+  allowedHeaders: "Content-Type,Authorization,Cookie",
+  credentials: true,
+});
 server.register(fastifyTRPCPlugin, {
   prefix: "/trpc",
   trpcOptions: {

@@ -4,7 +4,9 @@ import { Flex, Text } from "@radix-ui/themes";
 import LogoutButton from "../buttons/LogoutButton";
 
 export default function Navbar() {
-  const user = trpc.user.getUser.useQuery();
+  const user = trpc.user.getUser.useQuery(undefined, {
+    retry: false,
+  });
   const isLoggedIn = Boolean(user?.data?.name);
 
   return (

@@ -1,9 +1,14 @@
 "use client";
 
+import { env } from "@/utils/env";
 import { trpc } from "@/utils/trpc";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { httpBatchLink } from "@trpc/client";
 import { useState } from "react";
+
+const getBaseUrl = () => {
+  return `${env.SERVER_BASE_URL}/trpc`;
+};
 
 export default function Provider({ children }: { children: React.ReactNode }) {
   const [queryClient] = useState(() => new QueryClient());
@@ -11,8 +16,13 @@ export default function Provider({ children }: { children: React.ReactNode }) {
     trpc.createClient({
       links: [
         httpBatchLink({
-          url: "http://localhost:3000/trpc",
-          // You can pass any HTTP headers you wish here
+          url: getBaseUrl(),
+          fetch(url, options) {
+            return fetch(url, {
+              ...options,
+              credentials: "include",
+            });
+          },
         }),
       ],
     })

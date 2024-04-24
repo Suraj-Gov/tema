@@ -10,7 +10,7 @@ export const getSessionCookie = (session: Session) => {
   return lucia.createSessionCookie(session.id);
 };
 
-type LoginData = Omit<User, "hashedPassword"> & { session: Session };
+export type LoginData = Omit<User, "hashedPassword"> & { session: Session };
 
 // https://lucia-auth.com/guides/email-and-password/basics
 export const createUser = async (
@@ -91,14 +91,15 @@ export const isUserAuthorized = async (
       sessionCookie: lucia.createBlankSessionCookie().serialize(),
     };
   }
+  const uid = validation.session.userId;
   if (validation?.session?.fresh) {
     // issue fresh cookie
     const newCookie = lucia.createSessionCookie(validation.session.id);
     return {
       isAuthorized: true,
       sessionCookie: newCookie.serialize(),
-      uid: validation.session.userId,
+      uid,
     };
   }
-  return { isAuthorized: true };
+  return { isAuthorized: true, uid };
 };

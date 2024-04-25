@@ -26,12 +26,14 @@ export const ModifierTile = forwardRef<
     bgColor?: string;
     borderWidth?: number;
     borderRadius?: number;
+    padding?: number;
   }
 >(function ColorSwatchTile(props, ref) {
   const {
     bgColor = "#ffffff",
     borderWidth = 2,
     borderRadius = 2,
+    padding = 0,
     ...domProps
   } = props;
 
@@ -41,6 +43,8 @@ export const ModifierTile = forwardRef<
       ref={ref}
       variant="solid"
       style={{
+        position: "relative",
+        padding: padding,
         backgroundColor: bgColor,
         borderTopWidth: borderWidth,
         borderLeftWidth: borderWidth,
@@ -51,7 +55,14 @@ export const ModifierTile = forwardRef<
         height: "3rem",
         margin: "2px",
       }}
-    />
+    >
+      {padding ? (
+        <Box
+          position="absolute"
+          style={{ inset: padding, backgroundColor: "black" }}
+        ></Box>
+      ) : null}
+    </Button>
   );
 });
 
@@ -159,13 +170,17 @@ function DimensionPicker(props: {
           <ModifierTile borderWidth={px}>{props.children}</ModifierTile>
         ) : props.type === "radius" ? (
           <ModifierTile borderRadius={px}>{props.children}</ModifierTile>
+        ) : props.type === "padding" ? (
+          <ModifierTile padding={px} borderWidth={1} bgColor="red">
+            {props.children}
+          </ModifierTile>
         ) : null}
       </Popover.Trigger>
       <Popover.Content width={"10rem"}>
         <Slider
           min={0}
           defaultValue={[px]}
-          max={props.type === "border" ? 15 : 40}
+          max={props.type === "radius" ? 40 : 15}
           onValueChange={(px) => debouncedOnChange(px[0])}
         />
       </Popover.Content>

@@ -1,14 +1,7 @@
 "use client";
 import { populateDefaultValues } from "@/utils/editor";
 import { trpc } from "@/utils/trpc";
-import {
-  Container,
-  Flex,
-  Grid,
-  Heading,
-  Popover,
-  Text,
-} from "@radix-ui/themes";
+import { Container, Flex, Heading, Popover, Text } from "@radix-ui/themes";
 import equal from "fast-deep-equal";
 import React, { CSSProperties, useEffect, useRef, useState } from "react";
 import {
@@ -112,7 +105,7 @@ export default function Editor({ config, id }: props) {
   };
 
   return (
-    <Grid columns={"2"} rows={"1"}>
+    <Flex gap="2" wrap={"wrap"}>
       <Container p="4">
         <Container>
           <Heading size="5" as="h3">
@@ -151,13 +144,25 @@ export default function Editor({ config, id }: props) {
               />
             </Container>
           </Container>
+          <Container my="2">
+            <Heading size="3" as="h4">
+              Padding
+            </Heading>
+            <Container mt="2">
+              <DimensionSwatches
+                config={configState}
+                handleDimensionChange={handleDimensionChange}
+                dimensionType="padding"
+              />
+            </Container>
+          </Container>
         </Container>
       </Container>
-      <Container>
+      <Container p="4">
         <Heading size="5" as="h3">
           Components
         </Heading>
-        <Flex mt="2" wrap={"wrap"} gap="6">
+        <Flex align={"start"} mt="2" wrap={"wrap"} gap="6">
           <Applicator
             config={configState}
             elementStyles={configState.elements.button![0]}
@@ -169,7 +174,7 @@ export default function Editor({ config, id }: props) {
               });
             }}
           >
-            <button style={{ width: "8rem", height: "3rem" }}>Hey</button>
+            <button style={{ minWidth: "8rem", minHeight: "3rem" }}>Hey</button>
           </Applicator>
           <Applicator
             config={configState}
@@ -184,7 +189,7 @@ export default function Editor({ config, id }: props) {
           >
             <select
               defaultValue={"Default"}
-              style={{ width: "8rem", height: "3rem" }}
+              style={{ minWidth: "8rem", minHeight: "3rem" }}
             >
               <option value="Default">Default</option>
               <option value="Tangerine">Tangerine</option>
@@ -205,12 +210,12 @@ export default function Editor({ config, id }: props) {
             <input
               type="text"
               defaultValue={"Mary lost her lamb"}
-              style={{ width: "12rem", height: "2rem" }}
+              style={{ minWidth: "12rem", minHeight: "2rem" }}
             />
           </Applicator>
         </Flex>
       </Container>
-    </Grid>
+    </Flex>
   );
 }
 
@@ -238,8 +243,26 @@ function Applicator(props: {
   return (
     <Popover.Root>
       <Popover.Trigger>{element}</Popover.Trigger>
-      <Popover.Content>
+      <Popover.Content size={"4"}>
         <Flex>
+          <Flex p="2" direction={"column"} gap="2">
+            <Text>Text Color</Text>
+            <TilesContainer>
+              {config.colors.map((c) => (
+                <ModifierTile
+                  key={c.id}
+                  bgColor={c.val}
+                  onClick={() => {
+                    const newStyles = {
+                      ...elementStyles,
+                      color: c.val,
+                    };
+                    onChange(newStyles);
+                  }}
+                />
+              ))}
+            </TilesContainer>
+          </Flex>
           <Flex p="2" direction={"column"} gap="2">
             <Text>Background</Text>
             <TilesContainer>
@@ -278,6 +301,27 @@ function Applicator(props: {
           </Flex>
         </Flex>
         <Flex>
+          <Flex p="2" direction={"column"} gap="2">
+            <Text>Padding</Text>
+            <TilesContainer>
+              {config.dimensions
+                .filter((d) => d.type === "padding")
+                .map((d) => (
+                  <ModifierTile
+                    key={d.id}
+                    padding={d.px}
+                    onClick={() => {
+                      const newStyles = {
+                        ...elementStyles,
+                        paddingX: d.px,
+                        paddingY: d.px,
+                      };
+                      onChange(newStyles);
+                    }}
+                  />
+                ))}
+            </TilesContainer>
+          </Flex>
           <Flex p="2" direction={"column"} gap="2">
             <Text>Border Width</Text>
             <TilesContainer>

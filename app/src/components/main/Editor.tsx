@@ -26,6 +26,7 @@ interface props {
 const TIMEOUT_INTERVAL = 5000;
 
 export default function Editor({ config, id }: props) {
+  const [savedConfig, setSavedConfig] = useState(() => config);
   const [configState, setConfigState] = useState(() =>
     populateDefaultValues(config)
   );
@@ -33,29 +34,31 @@ export default function Editor({ config, id }: props) {
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const update = trpc.project.update.useMutation({
     onSuccess: () => {
-      config = structuredClone(configState);
+      console.log("saved");
+      setSavedConfig(structuredClone(configState));
     },
   });
 
-  console.log(configState);
-
   useEffect(() => {
-    const updateIfChanged = async () => {
-      const isEqual = equal(configState, config);
+    const updateIfChanged = async (
+      storedConfig: UserProjectConfig,
+      localConfig: UserProjectConfig
+    ) => {
+      const isEqual = equal(storedConfig, localConfig);
+      console.log({ isEqual });
       if (!isEqual) {
-        await update.mutateAsync({ config: configState });
+        await update.mutateAsync({ config: localConfig });
       }
-      timeoutRef.current = setTimeout(updateIfChanged, TIMEOUT_INTERVAL);
+      timeoutRef.current = null;
     };
 
-    timeoutRef.current = setTimeout(updateIfChanged, TIMEOUT_INTERVAL);
-
-    return () => {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
-    };
-  }, [config, configState, update]);
+    if (!timeoutRef.current) {
+      timeoutRef.current = setTimeout(
+        () => updateIfChanged(savedConfig, configState),
+        TIMEOUT_INTERVAL
+      );
+    }
+  }, [configState, savedConfig, update]);
 
   const handleColorChange = (
     params: ColorItem,

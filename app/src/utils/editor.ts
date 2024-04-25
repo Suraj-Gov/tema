@@ -1,7 +1,7 @@
 import { UserProjectConfig } from "../../../server/src/db/schema";
 
 export const populateDefaultValues = (config: UserProjectConfig) => {
-  const finalValue = { ...config };
+  const finalValue = structuredClone(config);
   if (!config.colors.length) {
     finalValue.colors.push(
       { id: 0, val: "#000000" },

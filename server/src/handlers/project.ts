@@ -38,6 +38,7 @@ const handleCreateProject = async (
 };
 
 const updateProjectFields = z.object({
+  id: z.number(),
   config: userProjectConfigSchema,
 });
 const handleUpdateProject = async (
@@ -45,10 +46,13 @@ const handleUpdateProject = async (
   input: z.infer<typeof updateProjectFields>
 ): Promise<Result<boolean>> => {
   try {
-    await db.update(userProjectsTable).set({
-      config: input.config,
-      updatedAt: new Date(),
-    });
+    await db
+      .update(userProjectsTable)
+      .set({
+        config: input.config,
+        updatedAt: new Date(),
+      })
+      .where(eq(userProjectsTable.id, input.id));
     return new Result(true);
   } catch (err) {
     console.error(err);

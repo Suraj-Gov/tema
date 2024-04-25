@@ -47,7 +47,7 @@ export default function Editor({ config, id }: props) {
       const isEqual = equal(storedConfig, localConfig);
       console.log({ isEqual });
       if (!isEqual) {
-        await update.mutateAsync({ config: localConfig });
+        await update.mutateAsync({ config: localConfig, id });
       }
       timeoutRef.current = null;
     };
@@ -58,6 +58,7 @@ export default function Editor({ config, id }: props) {
         TIMEOUT_INTERVAL
       );
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [configState, savedConfig, update]);
 
   const handleColorChange = (

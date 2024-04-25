@@ -3,7 +3,7 @@ import {
   ExclamationTriangleIcon,
   InfoCircledIcon,
 } from "@radix-ui/react-icons";
-import { Callout, Spinner, Table } from "@radix-ui/themes";
+import { Callout, Flex, Spinner, Table } from "@radix-ui/themes";
 import Link from "next/link";
 import { UserProfile } from "../../../../server/src/handlers/user";
 
@@ -11,7 +11,11 @@ export default function ProjectsList({ user }: { user: UserProfile }) {
   const projects = trpc.project.get.useQuery();
 
   if (projects.isLoading) {
-    return <Spinner size="3" />;
+    return (
+      <Flex justify="center">
+        <Spinner size="3" />
+      </Flex>
+    );
   }
 
   if (projects.error) {
